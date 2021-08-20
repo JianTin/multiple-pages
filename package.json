@@ -5,15 +5,27 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "gulp --gulpfile config/index.js compile"
+    "build": "cross-env NODE_ENV=production gulp --gulpfile config/index.js compile",
+    "dev": "cross-env NODE_ENV=development gulp --gulpfile config/index.js compile"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "core-js": "^3.16.2",
+    "cross-env": "^7.0.3",
     "fs-extra": "^10.0.0",
     "gulp": "^4.0.2",
     "gulp-cli": "^2.3.0",
+    "gulp-if": "^3.0.0",
+    "gulp-uglify": "^3.0.2",
     "merge2": "^1.4.1"
+  },
+  "devDependencies": {
+    "@babel/plugin-proposal-decorators": "^7.14.5",
+    "@babel/core": "^7.15.0",
+    "@babel/preset-env": "^7.15.0",
+    "@babel/preset-react": "^7.14.5",
+    "gulp-babel": "^8.0.0"
   }
 }

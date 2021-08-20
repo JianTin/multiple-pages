@@ -3,6 +3,9 @@ const {join, dirname} = require('path')
 const {removeSync} = require('fs-extra')
 const merge2 = require('merge2')
 const {resultFolderPath} = require('./assets.js')
+const babel = require('gulp-babel')
+const fulpIf = require('gulp-if')
+const uglify = require('gulp-uglify')
 
 const root = dirname(__dirname)
 // src 路径
@@ -13,7 +16,14 @@ const initDistPath = join(root, `/${distName}`)
 
 function compileJs(srcPath, distPath){
     srcPath += '/*.js'
+    const bool = process.env.NODE_ENV === 'production'
     return src(srcPath)
+    .pipe(babel({
+        configFile: join(root, '/babel.config.js')
+    }))
+    .pipe(
+        fulpIf(bool, uglify())
+    )
     .pipe(dest(distPath))
 }
 
