@@ -57,9 +57,7 @@ function compileCss(srcPath, distPath){
     const styleGlob = ['less', 'css'].map((extension)=> srcPath + `/*.${extension}` )
     // 判断是否是 less 文件
     const isLessFn = function(file){
-        const fileName = file.basename
-        const startSlice = fileName.indexOf('.') + 1
-        return fileName.substring(startSlice) === 'less'
+        return file.extname === '.less'
     }
     return src(styleGlob)
     .pipe(
