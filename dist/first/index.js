@@ -1,1 +1,0 @@
-"use strict";require("core-js/modules/es.object.to-string.js"),require("core-js/modules/es.promise.js"),console.log(123),new Promise;var fn=function(){};
