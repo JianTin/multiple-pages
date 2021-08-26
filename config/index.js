@@ -2,7 +2,7 @@ const {join, dirname} = require('path')
 const {resultFolderPath} = require('./assets.js')
 
 const {removeSync} = require('fs-extra')
-const {task, src, dest} = require('gulp')
+const {task, src, dest, series, watch} = require('gulp')
 const merge2 = require('merge2')
 const babel = require('gulp-babel')
 const gulpIf = require('gulp-if')
@@ -10,6 +10,8 @@ const composer = require('gulp-uglify/composer')
 const uglify = require('uglify-js')
 const postcss = require('gulp-postcss')
 const gulpLess = require('gulp-less')
+const browServer = require('browser-sync').create()
+const {createProxyMiddleware} = require('http-proxy-middleware')
 
 // 根目录
 const root = dirname(__dirname)
@@ -73,9 +75,30 @@ function compileHtml(srcPath, distPath){
     .pipe(dest(distPath))
 }
 
+// 监听 并允许重新 编译
+function watchFn(srcPath, distPath, compileFn){
+    // 判断 watch 初始化 以及 是否为 开发环境
+    if(!isProduction){
+        watch(srcPath, series(function(){
+            return compileFn(srcPath, distPath)
+        }, reload))
+    }
+}
+
 function init(){
     // 清除 dist 目录
     removeSync(initDistPath)
+    browServer.init({
+        server: {
+            baseDir: join(root, 'dist')
+        },
+        open: true,
+        startPath: 'first/index.html'
+    })
+}
+
+function reload(){
+    browServer.reload()
 }
 
 task('compile', function(){
@@ -100,3 +123,5 @@ task('compile', function(){
         }).flat()
     )
 })
+
+task('dev', series('compile', reload))

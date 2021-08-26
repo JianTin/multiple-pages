@@ -6,12 +6,14 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "cross-env NODE_ENV=production gulp --gulpfile config/index.js compile",
-    "dev": "cross-env NODE_ENV=development gulp --gulpfile config/index.js compile"
+    "dev": "cross-env NODE_ENV=development gulp --gulpfile config/index.js dev"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "browser-sync": "^2.27.5",
+    "browserify": "^17.0.0",
     "core-js": "^3.16.2",
     "cross-env": "^7.0.3",
     "cssnano": "^5.0.8",
@@ -22,6 +24,7 @@
     "gulp-less": "^5.0.0",
     "gulp-postcss": "^9.0.0",
     "gulp-uglify": "^3.0.2",
+    "http-proxy-middleware": "^2.0.1",
     "less": "^4.1.1",
     "merge2": "^1.4.1",
     "postcss": "^8.3.6",
