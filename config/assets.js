@@ -1,5 +1,13 @@
-const {join} = require('path')
+const {join, dirname} = require('path')
 const {readdirSync, lstatSync} = require('fs')
+
+// 根目录
+const root = dirname(__dirname)
+// src 路径
+const initSrcPath = join(root, '/src')
+// distPath 基于 srcPath
+const distName = 'dist'
+const initDistPath = join(root, `/${distName}`)
 
 /**
  *  递归获取src每个文件夹路径
@@ -23,6 +31,14 @@ function resultFolderPath(folderPath){
     return result
 }
 
+// 是否是 打包环境
+const isProduction = process.env.NODE_ENV === 'production'
+
 module.exports = {
-    resultFolderPath
+    resultFolderPath,
+    isProduction,
+    root,
+    initSrcPath,
+    distName,
+    initDistPath
 }
