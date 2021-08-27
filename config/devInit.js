@@ -12,13 +12,7 @@ function initServer(){
     })
 }
 
-function reload(cb){
-    console.log('reload')
-    browServer.reload()
-    cb()
-}
-
 module.exports = {
     initServer,
-    reload
+    reload: browServer.reload
 }

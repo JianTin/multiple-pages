@@ -38,10 +38,15 @@ function handelSrcPath(srcPath, extension){
 function watchFn(srcPath, distPath, compileFn){
     // 判断 watch 初始化 以及 是否为 开发环境
     if(!isProduction){
-        watch(srcPath, series(function(){
-            console.log(srcPath)
-            return compileFn(srcPath, distPath)
-        }), reload)
+        watch(
+            srcPath, 
+            series(
+                function(){
+                    console.log(srcPath)
+                    return compileFn(srcPath, distPath)
+                }, 'reload'
+            )
+        )
     }
 }
 
@@ -81,4 +86,10 @@ task('devInit', function(cb){
     cb()
 })
 
-task('dev', series('devInit', 'compile', reload))
+// 更新
+task('reload', (cb)=>{
+    reload()
+    cb()
+})
+
+task('dev', series('devInit', 'compile', 'reload'))
