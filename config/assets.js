@@ -1,13 +1,28 @@
 const {join, dirname} = require('path')
 const {readdirSync, lstatSync} = require('fs')
+const {default: {outputName, compileSrc}} = require('./userConfig')
 
 // 根目录
-const root = dirname(__dirname)
+const root = correctPath(dirname(__dirname))
 // src 路径
-const initSrcPath = join(root, '/src')
+const srcName = compileSrc
+const initSrcPath = correctPath(join(root, srcName))
 // distPath 基于 srcPath
-const distName = 'dist'
-const initDistPath = join(root, `/${distName}`)
+const distName = outputName
+const initDistPath = correctPath(join(root, `/${distName}`))
+// 定义baseRely目录
+const distBaseRelyPath = join(initDistPath, 'baseRely')
+// 定义rely目录
+const distRelyPath = join(initDistPath, 'rely')
+
+/**
+ * 修改 node join 路径 C:\\ -> C:/
+ * @params path --- 修改的路径
+ * @result result --- 修改后的路径
+ * */ 
+function correctPath(path){
+    return path.replace(/\\/g, '/')
+}
 
 /**
  *  递归获取src每个文件夹路径
@@ -19,7 +34,7 @@ function resultFolderPath(folderPath){
     const folderNameArray = readdirSync(folderPath)
     const result = folderNameArray.reduce( (prev, folderName) =>{
         // 组合为 folderPath + name
-        const path = join(folderPath, folderName)
+        const path = correctPath(join(folderPath, folderName))
         // 判断是不是 文件夹
         const isDirectory = lstatSync(path).isDirectory()
         // 不是文件夹 退出
@@ -36,9 +51,13 @@ const isProduction = process.env.NODE_ENV === 'production'
 
 module.exports = {
     resultFolderPath,
+    correctPath,
     isProduction,
     root,
+    srcName,
     initSrcPath,
     distName,
-    initDistPath
+    initDistPath,
+    distBaseRelyPath,
+    distRelyPath
 }
