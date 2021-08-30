@@ -1,4 +1,5 @@
-module.exports = ()=>({
+module.exports = {
+    viewportWidth: 750,
     dev: {
         openHtml: 'index.html',
         proxy: {
@@ -12,8 +13,9 @@ module.exports = ()=>({
     },
     rely: {
         'index.html': [
+            'node_modules/axios/dist/axios.min.js'
         ],
         'test/index.html': [
         ]
     }
-})
+}

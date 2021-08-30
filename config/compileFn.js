@@ -7,7 +7,7 @@ const {join, relative, basename} = require('path')
 const {readdirSync, existsSync} = require('fs')
 const {Buffer: {from}} = require('buffer')
 const {isProduction, root, distBaseRelyPath, srcName, distName, correctPath, distRelyPath, initSrcPath} = require('./assets')
-const { default: {baseRely, rely}, getConfig } = require('./userConfig')
+const { default: {baseRely, rely, viewportWidth}, getConfig } = require('./userConfig')
 
 const {src, dest} = require('gulp')
 const babel = require('gulp-babel')
@@ -81,7 +81,7 @@ class HandelHtml {
             if(storeModuleName && storeModuleName.includes(basename(module))) return
             globArray.push(join(root, module))
         })
-        return src(globArray.length === 0  ? '.' : globArray, {allowEmpty: true})
+        return src(globArray.length === 0 ? '.' : globArray , {allowEmpty: true})
         .pipe(dest(storeDistPath))
     }
 
@@ -126,7 +126,6 @@ class HandelHtml {
     compileHtml = (srcPath, distPath) => {
         const {generateBaseScript} = this
         const {baseRely, rely} = getConfig()
-        console.log(getConfig())
         return src(srcPath)
         .pipe(through.obj(function(chunk, enc, callback){
             // dirname -> srcPath,!basename

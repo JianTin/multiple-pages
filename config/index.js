@@ -71,7 +71,6 @@ class WatchClass {
 
     // 监听
     watchFileChange(keyFolder, srcPath, distPath, compileFn){
-        if(isProduction) return
         const watchIntance = watch(
             srcPath,
             {ignorePermissionErrors: true},
