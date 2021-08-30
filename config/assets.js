@@ -14,6 +14,7 @@ const initDistPath = correctPath(join(root, `/${distName}`))
 const distBaseRelyPath = join(initDistPath, 'baseRely')
 // 定义rely目录
 const distRelyPath = join(initDistPath, 'rely')
+const initConfigPaht = join(root, '/init.config.js')
 
 /**
  * 修改 node join 路径 C:\\ -> C:/
@@ -59,5 +60,6 @@ module.exports = {
     distName,
     initDistPath,
     distBaseRelyPath,
-    distRelyPath
+    distRelyPath,
+    initConfigPaht
 }

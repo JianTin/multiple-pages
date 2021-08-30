@@ -7,7 +7,8 @@ const {join, relative, basename} = require('path')
 const {readdirSync, existsSync} = require('fs')
 const {Buffer: {from}} = require('buffer')
 const {isProduction, root, distBaseRelyPath, srcName, distName, correctPath, distRelyPath, initSrcPath} = require('./assets')
-const { default: {baseRely, rely, viewportWidth}, getConfig } = require('./userConfig')
+const { default: {baseRely, rely, baseCss}, getConfig } = require('./userConfig')
+const postcssConfig = require('../postcss.plugins')
 
 const {src, dest} = require('gulp')
 const babel = require('gulp-babel')
@@ -60,7 +61,7 @@ function compileCss(srcPath, distPath){
     .pipe(
         gulpIf(isLessFn, gulpLess())
     )
-    .pipe(postcss())
+    .pipe(postcss(postcssConfig))
     .pipe(dest(distPath))
 }
 
@@ -88,7 +89,7 @@ class HandelHtml {
     baseRelyModule = () => {
         // [module, module]
         const {moveModuleFile} = this
-        return moveModuleFile(baseRely, distBaseRelyPath)
+        return moveModuleFile([baseCss, baseRely].flat(), distBaseRelyPath)
     }
 
     relyModule = () => {
@@ -103,6 +104,10 @@ class HandelHtml {
         return `<script src='${relyFilePath}'></script>\n`
     }
 
+    generateLink = (path) => {
+        return `<link href='${path}' rel="stylesheet" />`
+    }
+
     // 查询 distHtml -> module 的相对路径
     distRelativePath = (htmlPath, distModule) => {
         const distHtmlPath = htmlPath.replace(srcName, distName)
@@ -111,36 +116,57 @@ class HandelHtml {
     }
 
     // 生成 base script Element
-    generateBaseScript = (srcDirname, relyArray, relyPath)=>{
-        const {distRelativePath, generateScript} = this
+    generateRely = (type, srcDirname, relyArray, relyPath)=>{
+        const {distRelativePath, generateScript, generateLink} = this
         const relativePath = distRelativePath(srcDirname, relyPath)
+        const generate = type === 'js' ? generateScript : generateLink
         // 查询 要依赖的文件
         return relyArray.reduce((prev, name)=>{
             const moduleRelativePath = correctPath(join(relativePath, basename(name)))
-            prev += generateScript(moduleRelativePath)
+            prev += generate(moduleRelativePath)
             return prev
         }, '')
     }
 
+    hintHolder = (contentString, holder, elseCall)=> {
+        if(!contentString.includes(holder)){
+            console.error(path, `no replaceholder ${holder}`)
+        } else {
+            elseCall()
+        }
+    }
+
     // 处理 html
     compileHtml = (srcPath, distPath) => {
-        const {generateBaseScript} = this
-        const {baseRely, rely} = getConfig()
+        const {generateRely, hintHolder} = this
+        // 每次获取最新的
+        const {baseRely, rely, baseCss} = getConfig()
         return src(srcPath)
         .pipe(through.obj(function(chunk, enc, callback){
             // dirname -> srcPath,!basename
             // path -> srcPath
             const {contents, dirname, path} = chunk
+            // css 依赖
+            let relyCss = generateRely('css', dirname, baseCss, distBaseRelyPath)
             // 生成 baseScript
-            const baseScript = generateBaseScript(dirname, baseRely, distBaseRelyPath)
+            const baseScript = generateRely('js', dirname, baseRely, distBaseRelyPath)
+            // 特定 html 依赖
             let relyScript = ''
             // 生成 relyKey
             const htmlkey = correctPath(path).replace(initSrcPath, '').slice(1)
             if(rely[htmlkey]){
-                relyScript = generateBaseScript(dirname, rely[htmlkey], distRelyPath)
+                relyScript = generateRely('js', dirname, rely[htmlkey], distRelyPath)
             }
             let contentString = contents.toString()
-            contentString = contentString.replace(/<\/title>(\s|\n)+/, `</title>\n${baseScript + relyScript}`)
+            // 提示，以及转换
+            hintHolder(contentString, '<!--polyfill and npmModule-->', ()=>{
+                contentString = contentString.replace(
+                    '<!--polyfill and npmModule-->', `${baseScript + relyScript}`
+                )
+            })
+            hintHolder(contentString, '<!-- relyLink -->', ()=>{
+                contentString = contentString.replace( '<!-- relyLink -->', relyCss )
+            })
             // 转换为 buffer 
             chunk.contents = from(contentString)
             callback(null, chunk)

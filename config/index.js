@@ -1,6 +1,6 @@
 const {
     resultFolderPath, correctPath, 
-    isProduction, initDistPath, initSrcPath, distName, srcName
+    isProduction, initDistPath, initSrcPath, distName, srcName, initConfigPaht
 } = require('./assets.js')
 const {compileCss, compileJs, assetsMove, HandelHtml} = require('./compileFn')
 const {initServer, reloadStream} = require('./devInit')
@@ -33,7 +33,10 @@ class WatchClass {
          * }
         */
         this.watchIntanceStore = {}
+        // 监听 src project
         this.initWatchProjectDir(watchProjectPath)
+        // 监听 init.config.js
+        this.watchConfigModule()
     }
 
     // 收集 folderKey
@@ -82,7 +85,7 @@ class WatchClass {
     // 监听 config module
     watchConfigModule(){
         const {baseRelyModule, relyModule, compileHtml} = HtmlClassInstance
-        watch('../init.config.js', series(
+        watch(initConfigPaht, series(
                 ()=> merge2([baseRelyModule(), relyModule()]),
                 ()=> {
                     const allFloder = resultFolderPath(initSrcPath)
@@ -161,7 +164,6 @@ task('compile', function(){
 
 task('devInit', function(cb){
     WatchClassInstance = new WatchClass(initSrcPath + '/**/*')
-    WatchClassInstance.watchConfigModule()
     initServer()
     cb()
 })

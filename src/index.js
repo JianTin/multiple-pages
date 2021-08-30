@@ -1,5 +1,4 @@
-const axios = window.axios
+// jquery 注入，参考 根目录 init.config.js
 
-axios.get('/api').then((res)=>{
-    console.log(res.data)
-})
+const $ = window.$
+$('.outer')[0].innerHTML = 'hello word'

@@ -13,9 +13,8 @@ const defaultConfig = {
         openHtml: 'index.html',
         proxy: []
     },
-    baseRely: [
-        'node_modules/babel-polyfill/dist/polyfill.min.js'
-    ],
+    baseCss: [],
+    baseRely: [],
     rely: {}
 }
 
