@@ -159,9 +159,9 @@ class HandelHtml {
             }
             let contentString = contents.toString()
             // 提示，以及转换
-            hintHolder(contentString, '<!--polyfill and npmModule-->', ()=>{
+            hintHolder(contentString, '<!-- polyfill and npmModule -->', ()=>{
                 contentString = contentString.replace(
-                    '<!--polyfill and npmModule-->', `${baseScript + relyScript}`
+                    '<!-- polyfill and npmModule -->', `${baseScript + relyScript}`
                 )
             })
             hintHolder(contentString, '<!-- relyLink -->', ()=>{
