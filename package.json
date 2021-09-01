@@ -1,5 +1,5 @@
 {
-  "name": "multiple-pages",
+  "name": "rough-multiple-pages",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -9,7 +9,11 @@
     "dev": "cross-env NODE_ENV=development gulp --gulpfile config/index.js dev",
     "watch": "gulp --gulpfile config/index.js test"
   },
-  "keywords": [],
+  "bin": "./lib/index.js",
+  "keywords": [
+    "多页面",
+    "multiple-pages"
+  ],
   "author": "",
   "license": "ISC",
   "dependencies": {
@@ -17,9 +21,11 @@
     "@babel/plugin-proposal-decorators": "^7.14.5",
     "@babel/preset-env": "^7.15.0",
     "browser-sync": "^2.27.5",
+    "commander": "^8.1.0",
     "core-js": "^3.16.2",
     "cross-env": "^7.0.3",
     "cssnano": "^5.0.8",
+    "download-git-repo": "^3.0.2",
     "fs-extra": "^10.0.0",
     "gulp": "^4.0.2",
     "gulp-babel": "^8.0.0",
@@ -32,6 +38,7 @@
     "less": "^4.1.1",
     "merge": "^2.1.1",
     "merge2": "^1.4.1",
+    "ora": "^0.3.0",
     "postcss": "^8.3.6",
     "postcss-cli": "^8.3.1",
     "postcss-discard-unused": "^5.0.1",
@@ -39,6 +46,7 @@
     "postcss-preset-env": "^6.7.0",
     "postcss-px-to-viewport": "^1.1.1",
     "postcss-reduce-idents": "^5.0.1",
+    "prompts": "^2.4.1",
     "through2": "^4.0.2",
     "uglify-js": "^3.14.1",
     "webpack-merge": "^5.8.0"
