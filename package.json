@@ -14,6 +14,10 @@
     "多页面",
     "multiple-pages"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/JianTin/multiple-pages"
+  },
   "author": "",
   "license": "ISC",
   "dependencies": {
