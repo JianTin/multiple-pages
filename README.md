@@ -1,7 +1,9 @@
 # rough-multiple-pages
 ___
 一个使用 **gulp** 构建的项目初始化工具。  
-倾向于使用原生 html + css (less) + js 去开发页面。如果需要依赖于 vue / react 那可能不太适合。
+倾向于使用原生 html + css (less) + js 去开发页面。如果需要依赖于 vue / react 那可能不太适合。  
+
+    npx rough-multiple-pages [appName]  
 ##### 理由
 一些简单的页面，并不需要依赖于 react / vue 这些框架，这样反而造成的页面加载速度慢。  
 例如：只需要开发简单的活动页（线上时间 只是几天的时间），这些页面往往比较简单。借用 react / vue 可能使得你开发更熟练、更快（webpack的基础上），但是有可能造成页面加载缓慢。

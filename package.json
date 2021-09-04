@@ -12,7 +12,8 @@
   "bin": "./lib/index.js",
   "keywords": [
     "多页面",
-    "multiple-pages"
+    "multiple-pages",
+    "rough-multiple-pages"
   ],
   "repository": {
     "type": "git",
