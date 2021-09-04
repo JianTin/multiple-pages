@@ -108,7 +108,7 @@ class HandelHtml {
         return `<link href='${path}' rel="stylesheet" />`
     }
 
-    // 查询 distHtml -> module 的相对路径
+    // 查询 distHtml -> moduleFolder 的相对路径
     distRelativePath = (htmlPath, distModule) => {
         const distHtmlPath = htmlPath.replace(srcName, distName)
         // 查询 相对路径
@@ -122,13 +122,15 @@ class HandelHtml {
         const generate = type === 'js' ? generateScript : generateLink
         // 查询 要依赖的文件
         return relyArray.reduce((prev, name)=>{
-            const moduleRelativePath = correctPath(join(relativePath, basename(name)))
+            // 链接为 dist modulepath
+            const modulePath = correctPath(join(relativePath, basename(name)))
+            const moduleRelativePath = modulePath
             prev += generate(moduleRelativePath)
             return prev
         }, '')
     }
 
-    hintHolder = (contentString, holder, elseCall)=> {
+    hintHolder = (contentString, holder, elseCall, path)=> {
         if(!contentString.includes(holder)){
             console.error(path, `no replaceholder ${holder}`)
         } else {
@@ -139,10 +141,10 @@ class HandelHtml {
     // 处理 html
     compileHtml = (srcPath, distPath) => {
         const {generateRely, hintHolder} = this
-        // 每次获取最新的
+        // 每次获取最新的module，主要是为了拿到 basename（模块已经先 move base）
         const {baseRely, rely, baseCss} = getConfig()
         return src(srcPath)
-        .pipe(through.obj(function(chunk, enc, callback){
+        .pipe(through.obj(function(chunk, enc, callback){ // 处理 html 文件
             // dirname -> srcPath,!basename
             // path -> srcPath
             const {contents, dirname, path} = chunk
@@ -163,10 +165,10 @@ class HandelHtml {
                 contentString = contentString.replace(
                     '<!-- polyfill and npmModule -->', `${baseScript + relyScript}`
                 )
-            })
+            }, path)
             hintHolder(contentString, '<!-- relyLink -->', ()=>{
                 contentString = contentString.replace( '<!-- relyLink -->', relyCss )
-            })
+            }, path)
             // 转换为 buffer 
             chunk.contents = from(contentString)
             callback(null, chunk)
